@@ -79,17 +79,31 @@ def get_overview():
             FROM suppliers;
         """, conn).to_dict(orient="records")[0]
 
-        # Monthly Sales Trend
-        monthly_trend = pd.read_sql("""
-            SELECT strftime('%Y-%m', sale_date) as month,
-                   SUM(total_revenue) as monthly_revenue,
-                   SUM(quantity) as monthly_units
+        # Monthly Sales Trend — dialect-agnostic: pull daily totals and aggregate in Python
+        monthly_trend_raw = pd.read_sql("""
+            SELECT DATE(sale_date) as sale_date,
+                   SUM(total_revenue) as daily_revenue,
+                   SUM(quantity) as daily_units
             FROM sales
-            GROUP BY month
-            ORDER BY month ASC;
-        """, conn).to_dict(orient="records")
+            GROUP BY DATE(sale_date)
+            ORDER BY sale_date ASC;
+        """, conn)
 
     engine.dispose()
+
+    # Aggregate daily -> monthly in pandas (works for both SQLite and PostgreSQL)
+    if not monthly_trend_raw.empty:
+        monthly_trend_raw["sale_date"] = pd.to_datetime(monthly_trend_raw["sale_date"])
+        monthly_trend_raw["month"] = monthly_trend_raw["sale_date"].dt.to_period("M").astype(str)
+        monthly_trend = (
+            monthly_trend_raw.groupby("month")[["daily_revenue", "daily_units"]]
+            .sum()
+            .rename(columns={"daily_revenue": "monthly_revenue", "daily_units": "monthly_units"})
+            .reset_index()
+            .to_dict(orient="records")
+        )
+    else:
+        monthly_trend = []
 
     return {
         "kpi": {
