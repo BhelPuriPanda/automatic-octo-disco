@@ -7,3 +7,16 @@ __pycache__/
 .env
 .DS_Store
 *.log
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Sample / generated data files (can be large)
+sample_data/raw_retail_sales.csv
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/

@@ -1,0 +1,39 @@
+﻿## Render.com Blueprint — SupplyChainIQ
+## Deploy at: https://dashboard.render.com/select-repo
+## Docs: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: supplychainiq
+    runtime: python
+    region: oregon
+    plan: free
+
+    buildCommand: pip install -r requirements.txt
+    startCommand: python startup.py && uvicorn api.main:app --host 0.0.0.0 --port $PORT
+
+    branch: main
+
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: supplychainiq-db
+          property: connectionString
+
+      - key: USE_SQLITE_FALLBACK
+        value: "false"
+
+      - key: RANDOM_SEED
+        value: "42"
+
+      - key: LOG_LEVEL
+        value: "INFO"
+
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+
+databases:
+  - name: supplychainiq-db
+    databaseName: supplychainiq
+    plan: free
+    region: oregon
