@@ -8,42 +8,42 @@
 
 ```mermaid
 flowchart TD
-    subgraph Phase 1: Data Engineering & Ingestion
-        A[Raw Sales CSV / Public Dataset] --> B[Schema Validator]
-        B --> C[Data Cleaning & Outlier Treatment]
-        C --> D[Synthetic Supply Chain Enricher]
-        D --> E[(PostgreSQL / SQLite Database)]
+    subgraph P1["Phase 1: Data Engineering & Ingestion"]
+        A["Raw Sales CSV / Public Dataset"] --> B["Schema Validator"]
+        B --> C["Data Cleaning & Outlier Treatment"]
+        C --> D["Synthetic Supply Chain Enricher"]
+        D --> E[("PostgreSQL / SQLite Database")]
     end
 
-    subgraph Phase 2: Demand Forecasting
-        E --> F[Train/Test Time-Split]
-        F --> G[Moving Average & Exp Smoothing]
-        G --> H[Model Evaluation: MAE, RMSE, MAPE]
+    subgraph P2["Phase 2: Demand Forecasting"]
+        E --> F["Train/Test Time-Split"]
+        F --> G["Moving Average & Exp Smoothing"]
+        G --> H["Model Evaluation: MAE, RMSE, MAPE"]
         H --> E
     end
 
-    subgraph Phase 3: Inventory Math & Policies
-        E --> I[Safety Stock: SS = Z * σ_d * √L]
-        I --> J[Reorder Point: ROP = d_avg * L + SS]
-        J --> K[Economic Order Quantity: EOQ = √(2DS/H)]
+    subgraph P3["Phase 3: Inventory Math & Policies"]
+        E --> I["Safety Stock: SS = Z * sigma_d * sqrt(L)"]
+        I --> J["Reorder Point: ROP = d_avg * L + SS"]
+        J --> K["Economic Order Quantity: EOQ = sqrt(2DS/H)"]
         K --> E
     end
 
-    subgraph Phase 4: ABC Analysis & Replenishment
-        E --> L[Pareto ABC Classification: 80/15/5]
-        L --> M[Stockout Risk & Stock Days Index]
-        M --> N[Replenishment Orders Generator]
+    subgraph P4["Phase 4: ABC Analysis & Replenishment"]
+        E --> L["Pareto ABC Classification: 80/15/5"]
+        L --> M["Stockout Risk & Stock Days Index"]
+        M --> N["Replenishment Orders Generator"]
         N --> E
     end
 
-    subgraph Phase 5: Supplier Performance Scorecard
-        E --> O[OTIF 40% + Lead Time 30% + Quality 20% + Cost 10%]
-        O --> P[Supplier Ranking & Risk Profiling]
+    subgraph P5["Phase 5: Supplier Performance Scorecard"]
+        E --> O["OTIF 40% + Lead Time 30% + Quality 20% + Cost 10%"]
+        O --> P["Supplier Ranking & Risk Profiling"]
         P --> E
     end
 
-    subgraph Phase 6: Analytics & Dashboard Layer
-        E --> Q[Power BI Dashboard / FastAPI + React UI]
+    subgraph P6["Phase 6: Analytics & Dashboard Layer"]
+        E --> Q["Power BI Dashboard / FastAPI + React UI"]
     end
 ```
 
